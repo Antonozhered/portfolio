@@ -1,0 +1,77 @@
+---
+const links = [
+    { href: "/", label: "Home" },
+    { href: "/about", label: "About" },
+    { href: "/projects/", label: "Projects" },
+    { href: "/passions/", label: "Passions" },
+];
+const current = Astro.url.pathname.replace(/\/+$/, "") || "/";
+---
+
+<div class="navwrap">
+    <button
+        class="hamburger"
+        aria-label="Menu"
+        aria-controls="site-drawer"
+        aria-expanded="false">☰</button
+    >
+    <aside id="site-drawer" class="drawer" aria-hidden="true">
+        <div class="row" style="margin-bottom:.5rem">
+            <strong>Menu</strong>
+            <button id="theme-toggle" class="badge" type="button"
+                >Toggle theme</button
+            >
+        </div>
+        {
+            links.map((l) => (
+                <a
+                    href={l.href}
+                    aria-current={
+                        current === (l.href.replace(/\/+$/, "") || "/")
+                            ? "page"
+                            : undefined
+                    }
+                >
+                    {l.label}
+                </a>
+            ))
+        }
+        <div style="margin-top:1rem">
+            <span class="badge">© {new Date().getFullYear()} Anton</span>
+        </div>
+    </aside>
+
+    <script is:inline>
+        // ---- theme (persist to localStorage) ----
+        const applyTheme = (t) =>
+            document.documentElement.setAttribute("data-theme", t);
+        const getTheme = () => localStorage.getItem("theme") || "dark";
+        applyTheme(getTheme());
+        document
+            .getElementById("theme-toggle")
+            ?.addEventListener("click", () => {
+                const next = getTheme() === "dark" ? "light" : "dark";
+                localStorage.setItem("theme", next);
+                applyTheme(next);
+            });
+
+        // ---- drawer / hamburger ----
+        const btn = document.querySelector(".hamburger");
+        const drawer = document.getElementById("site-drawer");
+        const open = (v) => {
+            drawer.classList.toggle("open", v);
+            drawer.setAttribute("aria-hidden", String(!v));
+            btn.setAttribute("aria-expanded", String(v));
+            document.body.style.overflow = v ? "hidden" : "";
+        };
+        btn?.addEventListener("click", () =>
+            open(!drawer.classList.contains("open")),
+        );
+        drawer?.addEventListener("click", (e) => {
+            if (e.target.tagName === "A") open(false);
+        });
+        window.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") open(false);
+        });
+    </script>
+</div>

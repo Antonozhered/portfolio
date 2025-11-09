@@ -1,3 +1,53 @@
 ---
+import Base from "../layouts/Base.astro";
+import { getCollection } from "astro:content";
+const projects = (await getCollection("projects"))
+    .sort((a, b) => b.data.date.localeCompare(a.data.date))
+    .slice(0, 3);
+const passions = (await getCollection("passions"))
+    .sort((a, b) => b.data.date.localeCompare(a.data.date))
+    .slice(0, 3);
 ---
 
+<Base title="Anton — Home">
+    <figure class="hero">
+        <img src="../assets/capy.jpg" alt="Header image" />
+    </figure>
+
+    <section class="section">
+        <h2>Projects</h2>
+        <div class="grid grid-2">
+            {
+                projects.map((p) => (
+                    <a class="card" href={`/projects/${p.id}/`}>
+                        <h3>{p.data.title}</h3>
+                        <p>{p.data.summary}</p>
+                        <small>{p.data.date}</small>
+                    </a>
+                ))
+            }
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>Passions</h2>
+        <div class="grid grid-2">
+            {
+                passions.map((n) => (
+                    <a class="card" href={`/passions/${n.id}/`}>
+                        <h3>{n.data.title}</h3>
+                        <p>{n.data.summary}</p>
+                        <small>{n.data.date}</small>
+                    </a>
+                ))
+            }
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>About me (short)</h2>
+        <p>
+            I’m a Devine student building playful, performant web experiences.
+        </p>
+    </section>
+</Base>

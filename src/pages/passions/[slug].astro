@@ -1,0 +1,20 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection } from "astro:content";
+export async function getStaticPaths() {
+    const entries = await getCollection("passions");
+    return entries.map((e) => ({
+        params: { slug: e.id },
+        props: { entry: e },
+    }));
+}
+const { entry } = Astro.props;
+---
+
+<Base title={`${entry.data.title} — Passion`}>
+    <article class="card">
+        <h1>{entry.data.title}</h1>
+        <p><small>{entry.data.date}</small></p>
+        <slot />
+    </article>
+</Base>

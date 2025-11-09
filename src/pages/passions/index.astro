@@ -1,0 +1,22 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getCollection } from "astro:content";
+const passions = (await getCollection("passions")).sort((a, b) =>
+    b.data.date.localeCompare(a.data.date),
+);
+---
+
+<Base title="Passions — Anton">
+    <h1>Passions</h1>
+    <div class="grid grid-2">
+        {
+            passions.map((n) => (
+                <a class="card" href={`/passions/${n.id}/`}>
+                    <h3>{n.data.title}</h3>
+                    <p>{n.data.summary}</p>
+                    <small>{n.data.date}</small>
+                </a>
+            ))
+        }
+    </div>
+</Base>
